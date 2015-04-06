@@ -1,0 +1,24 @@
+/* Empty. Add your own CSS if you like */
+
+
+body {
+
+	background-image: url(../img/back_2.jpg);
+	color: white
+	background-repeat: repeat;
+  	background-size: cover;
+ 	background-position: center;
+}
+
+html * {
+	
+	background-color: rgba(29, 51, 66, 0.5) !important;
+	color: white !important;
+
+}
+
+body .view-container {
+
+	opacity: 0.8;
+	background-color: transparent !important;
+}
