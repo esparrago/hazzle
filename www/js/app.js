@@ -4,24 +4,46 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+angular.module('starter', ['ionic', 'firebase','com.htmlxprs.starter.services','com.htmlxprs.starter.controllers', 'starter.controllers', 'starter.directives','starter.filters'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform,$state,$rootScope,userSession) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-    if (window.cordova && window.cordova.plugins.Keyboard) {
+    if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
-    if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
+    if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+   // $rootScope.$on('$firebaseSimpleLogin:login', function(event, user) {
+   //     userSession.user=user;
+   //     $state.go('app.venues');
+   // });
+
+   // $rootScope.$on('$firebaseSimpleLogin:error', function(event, error) {
+   //      console.log('Error logging user in: ', error);
+   // });
+
+   // $rootScope.$on('$firebaseSimpleLogin:logout', function(event) {
+   //       $state.go('app.venues');
+   // });
+
   });
 })
 
+
+
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
+
+
+  .state('login',{
+        url:'/login',
+        templateUrl:'templates/login.html',
+        controller: 'LoginController'
+    })
 
   .state('app', {
     url: "/app",
@@ -47,25 +69,26 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-    .state('app.playlists', {
-      url: "/playlists",
+    .state('app.venues', {
+      url: "/venues",
       views: {
         'menuContent': {
-          templateUrl: "templates/playlists.html",
-          controller: 'PlaylistsCtrl'
+          templateUrl: "templates/venues.html",
+          controller: 'venuesCtrl'
         }
       }
     })
 
   .state('app.single', {
-    url: "/playlists/:playlistId",
+    url: "/venues/:venuesTitle",
     views: {
       'menuContent': {
         templateUrl: "templates/playlist.html",
-        controller: 'PlaylistCtrl'
+        controller: 'venuesCtrl'
       }
     }
+
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/playlists');
+  $urlRouterProvider.otherwise('app/venues');
 });
