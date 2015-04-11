@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'firebase','com.htmlxprs.starter.services','com.htmlxprs.starter.controllers', 'starter.controllers', 'starter.directives','starter.filters'])
+angular.module('starter', ['ionic', 'firebase','com.hazzle.starter.services','com.hazzle.starter.controllers', 'starter.controllers', 'starter.directives','starter.filters'])
 
 .run(function($ionicPlatform,$state,$rootScope,userSession) {
   $ionicPlatform.ready(function() {
@@ -17,23 +17,22 @@ angular.module('starter', ['ionic', 'firebase','com.htmlxprs.starter.services','
       StatusBar.styleDefault();
     }
 
-   // $rootScope.$on('$firebaseSimpleLogin:login', function(event, user) {
-   //     userSession.user=user;
-   //     $state.go('app.venues');
-   // });
+   $rootScope.$on('$firebaseSimpleLogin:login', function(event, user) {
+       userSession.user=user;
+       $state.go('home.venues');
+       console.log(user);
+   });
 
-   // $rootScope.$on('$firebaseSimpleLogin:error', function(event, error) {
-   //      console.log('Error logging user in: ', error);
-   // });
+   $rootScope.$on('$firebaseSimpleLogin:error', function(event, error) {
+        console.log('Error logging user in: ', error);
+   });
 
-   // $rootScope.$on('$firebaseSimpleLogin:logout', function(event) {
-   //       $state.go('app.venues');
-   // });
+   $rootScope.$on('$firebaseSimpleLogin:logout', function(event) {
+         $state.go('login');
+   });
 
   });
 })
-
-
 
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
@@ -45,31 +44,14 @@ angular.module('starter', ['ionic', 'firebase','com.htmlxprs.starter.services','
         controller: 'LoginController'
     })
 
-  .state('app', {
-    url: "/app",
+  .state('home', {
+    url: "/home",
     abstract: true,
     templateUrl: "templates/menu.html",
-    controller: 'AppCtrl'
+    controller: 'HomeCtrl'
   })
 
-  .state('app.search', {
-    url: "/search",
-    views: {
-      'menuContent': {
-        templateUrl: "templates/search.html"
-      }
-    }
-  })
-
-  .state('app.browse', {
-    url: "/browse",
-    views: {
-      'menuContent': {
-        templateUrl: "templates/browse.html"
-      }
-    }
-  })
-    .state('app.venues', {
+    .state('home.venues', {
       url: "/venues",
       views: {
         'menuContent': {
@@ -79,7 +61,17 @@ angular.module('starter', ['ionic', 'firebase','com.htmlxprs.starter.services','
       }
     })
 
-  .state('app.single', {
+  .state('home.chat', {
+    url: "/chat",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/chat.html",
+        controller: 'chatCtrl'
+      }
+    }
+  })
+
+  .state('home.single', {
     url: "/venues/:venuesTitle",
     views: {
       'menuContent': {
@@ -87,8 +79,9 @@ angular.module('starter', ['ionic', 'firebase','com.htmlxprs.starter.services','
         controller: 'venuesCtrl'
       }
     }
+  })
 
-  });
+
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('app/venues');
+  $urlRouterProvider.otherwise('login');
 });

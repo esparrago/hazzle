@@ -18,24 +18,60 @@ angular.module('starter.controllers', [])
 
 var esparrago = "https://esparrago-test.firebaseio.com"
 
-angular.module('com.htmlxprs.starter.controllers',[])
+
+
+angular.module('com.hazzle.starter.controllers',['com.hazzle.starter.services'])
 
 .controller('LoginController',['$scope','https://esparrago-test.firebaseio.com','$firebaseSimpleLogin','userSession',function($scope,esparrago,$firebaseSimpleLogin,userSession){
     userSession.auth=$firebaseSimpleLogin(new Firebase(esparrago));
 
     $scope.login=function(provider){
         userSession.auth.$login(provider);
+
     }
 
 }])
 
-.controller('AppCtrl',['$scope','https://esparrago-test.firebaseio.com', '$firebaseSimpleLogin', 'userSession',function($scope,$firebaseSimpleLogin,userSession){
+.controller('HomeCtrl',['$scope','userSession',function($scope,userSession){
 
-  $scope.user=userSession.user;
+$scope.user=userSession.user;
 
-  $scope.logout=function(){
+$scope.logout=function(){
     userSession.auth.$logout();
-  }
+}
 
-}]);
+}])
+
+
+.controller('ChatCtrl', ['$scope','userSession'],function ($scope, simpleLogin, fbutil, $timeout) {
+
+    //$scope.user = user;
+
+    // synchronize a read-only, synchronized array of messages, limit to most recent 10
+    $scope.messages = fbutil.syncArray('messages', {limitToLast: 10});
+
+    // display any errors
+    $scope.messages.$loaded().catch(alert);
+
+    // provide a method for adding a message
+    $scope.addMessage = function(newMessage) {
+      if( newMessage ) {
+        // push a message to the end of the array
+        $scope.messages.$add({text: newMessage})
+          // display any errors
+          .catch(alert);
+      }
+    };
+
+
+    function alert(msg) {
+      $scope.err = msg;
+      $timeout(function() {
+        $scope.err = null;
+      }, 5000);
+    }
+  });
+
+
+
 

@@ -20,18 +20,19 @@
       <ion-list>
         
         <ion-item nav-clear menu-close>
-          <img  ng-src="{{user.facebook.picture.data.url}}"/>
+          <img  class="center-block" ng-src="{{user.thirdPartyUserData.picture.data.url}}"/>
+          <p class="text-center user-displayname">{{user.displayName}}</p>
         </ion-item>
 
         <ion-item nav-clear menu-close href= "#/login">
-          login
+          Login
         </ion-item>
         
                 
-        <ion-item nav-clear menu-close href="#/app/browse">
-          Browse
+        <ion-item nav-clear menu-close href="#/home/chat">
+          Chat
         </ion-item>
-        <ion-item nav-clear menu-close href="#/app/playlists">
+        <ion-item nav-clear menu-close href="#/home/venues">
           Bares
         </ion-item>
       </ion-list>
