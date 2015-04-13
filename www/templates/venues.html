@@ -1,7 +1,7 @@
 <ion-view view-title="Bares">
   <ion-content>
     <ion-list>
-      <ion-item class="venues-item" ng-repeat="venues in venues" href="#/app/venues/{{venues.title | nospace}}">
+      <ion-item class="venues-item" ng-repeat="venues in venues" href="#/home/venues/{{venues.title | nospace}}">
       	<div class="background-venues" back-img="img/{{venues.img}}"></div>
         <h1 class="text-center">{{venues.title}}</h1>
         {{venues.checkins}}

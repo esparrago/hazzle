@@ -20,21 +20,23 @@
       <ion-list>
         
         <ion-item nav-clear menu-close>
-          <img  class="center-block" ng-src="{{user.thirdPartyUserData.picture.data.url}}"/>
-          <p class="text-center user-displayname">{{user.displayName}}</p>
+          <img  class="center-block img-circle" ng-src="{{userData.facebook.cachedUserProfile.picture.data.url}}"/>
+          <p class="text-center user-displayname">{{userData.facebook.displayName}}</p>
         </ion-item>
 
-        <ion-item nav-clear menu-close href= "#/login">
-          Login
+        <ion-item nav-clear menu-close ng-click="logout()" href="">
+          logout
         </ion-item>
-        
-                
         <ion-item nav-clear menu-close href="#/home/chat">
           Chat
         </ion-item>
         <ion-item nav-clear menu-close href="#/home/venues">
           Bares
         </ion-item>
+        <ion-item nav-clear menu-close href="#/home/camera">
+          Camera
+        </ion-item>
+
       </ion-list>
     </ion-content>
   </ion-side-menu>

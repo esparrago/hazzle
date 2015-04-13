@@ -4,9 +4,16 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'firebase','com.hazzle.starter.services','com.hazzle.starter.controllers', 'starter.controllers', 'starter.directives','starter.filters'])
 
-.run(function($ionicPlatform,$state,$rootScope,userSession) {
+
+
+// Global URL
+var firebaseUrl = "https://esparrago-test.firebaseio.com";
+
+
+angular.module('starter', ['ionic', 'firebase', 'starter.services', 'starter.controllers', 'starter.directives','starter.filters','cloudinary'])
+
+.run(function($ionicPlatform,$state,$rootScope,$location,Auth,$ionicLoading) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -17,19 +24,34 @@ angular.module('starter', ['ionic', 'firebase','com.hazzle.starter.services','co
       StatusBar.styleDefault();
     }
 
-   $rootScope.$on('$firebaseSimpleLogin:login', function(event, user) {
-       userSession.user=user;
-       $state.go('home.venues');
-       console.log(user);
-   });
+    ionic.Platform.fullScreen();
 
-   $rootScope.$on('$firebaseSimpleLogin:error', function(event, error) {
-        console.log('Error logging user in: ', error);
-   });
+    $rootScope.firebaseUrl = firebaseUrl;
 
-   $rootScope.$on('$firebaseSimpleLogin:logout', function(event) {
-         $state.go('login');
-   });
+    Auth.$onAuth(function (authData) {
+      if (authData) {
+          console.log("appjs/Logged in as:", authData.uid);
+           $state.go('home.venues');
+      }
+      else {
+          console.log("appjs/Not Logged");
+          $ionicLoading.hide();
+          $location.path('/login');
+      }
+    });
+
+    $rootScope.logout = function () {
+      console.log("Logging out from the app");
+      Auth.$unauth();
+    }
+
+    $rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
+      // We can catch the error thrown when the $requireAuth promise is rejected
+      // and redirect the user back to the home page
+      if (error === "AUTH_REQUIRED") {
+          $location.path("/login");
+      }
+    });
 
   });
 })
@@ -41,14 +63,33 @@ angular.module('starter', ['ionic', 'firebase','com.hazzle.starter.services','co
   .state('login',{
         url:'/login',
         templateUrl:'templates/login.html',
-        controller: 'LoginController'
+        controller: 'LoginController',
+        resolve: {
+          // controller will not be loaded until $waitForAuth resolves
+          // Auth refers to our $firebaseAuth wrapper in the example above
+          "currentAuth": ["Auth",
+              function (Auth) {
+                  // $waitForAuth returns a promise so the resolve waits for it to complete
+                  return Auth.$waitForAuth();
+          }]
+        }
     })
 
   .state('home', {
     url: "/home",
     abstract: true,
     templateUrl: "templates/menu.html",
-    controller: 'HomeCtrl'
+    controller: 'HomeCtrl',
+    resolve: {
+        // controller will not be loaded until $requireAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth",
+            function (Auth) {
+                // $requireAuth returns a promise so the resolve waits for it to complete
+                // If the promise is rejected, it will throw a $stateChangeError (see above)
+                return Auth.$requireAuth();
+      }]
+    }
   })
 
     .state('home.venues', {
@@ -66,7 +107,7 @@ angular.module('starter', ['ionic', 'firebase','com.hazzle.starter.services','co
     views: {
       'menuContent': {
         templateUrl: "templates/chat.html",
-        controller: 'chatCtrl'
+        controller: 'ChatCtrl'
       }
     }
   })
@@ -77,6 +118,16 @@ angular.module('starter', ['ionic', 'firebase','com.hazzle.starter.services','co
       'menuContent': {
         templateUrl: "templates/playlist.html",
         controller: 'venuesCtrl'
+      }
+    }
+  })
+
+  .state('home.camera', {
+    url: "/camera",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/camera.html",
+        controller: 'CameraCtrl'
       }
     }
   })

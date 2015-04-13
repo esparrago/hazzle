@@ -13,4 +13,12 @@ angular.module('starter.filters', [])
 	    return function (value) {
 	        return (!value) ? '' : value.replace(/ /g, '');
 	    };
-	});
+	})
+
+	.filter('reverse', function() {
+    return function(items) {
+      return angular.isArray(items)? items.slice().reverse() : [];
+    };
+  });
+
+
