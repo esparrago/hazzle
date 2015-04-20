@@ -30,7 +30,7 @@ angular.module('starter.controllers', [])
 
 //-----Home/Menu-----
 
-  .controller("HomeCtrl", function($scope, Auth, $state) {
+  .controller("HomeCtrl", function($scope, Auth, $state, $ionicHistory) {
     $scope.auth = Auth;
     var userData = $scope.auth.$getAuth();
 
@@ -40,6 +40,16 @@ angular.module('starter.controllers', [])
     } else {
       console.log("Home/Logged out");
     }
+
+    $scope.myGoBack = function() {
+      $ionicHistory.goBack();
+    };
+
+    document.addEventListener("backbutton", function () {
+        myGoBack();
+        console.log("hola");
+    });
+
   })
 
 //-----Venues/Bares-----
@@ -103,6 +113,7 @@ angular.module('starter.controllers', [])
 
 //-----Camera-----
 
+<<<<<<< Updated upstream
   .controller("CameraCtrl", function($scope, Camera, $http, Cloudinary) {
 
       console.log($scope.imageUrl);
@@ -156,6 +167,117 @@ angular.module('starter.controllers', [])
   });//cameraCtrl
 
 
+=======
+  // .controller("CameraCtrl", function($scope, Camera, $rootScope, $upload) {
+
+  //     console.log("camera");
+  //     $scope.getPhoto = function() {
+  //       console.log('Getting camera');
+  //       Camera.getPicture({
+  //         quality: 75,
+  //         targetWidth: 720,
+  //         targetHeight: 720,
+  //         saveToPhotoAlbum: false
+  //       })
+  //       .then(function(imageURI) {
+  //         console.log(imageURI);
+  //         $scope.lastPhoto = imageURI;
+
+  //         //---Cloudinary----
+  //         /* Uploading with Angular File Upload */
+
+  //         $scope.$watch('files', function() {
+  //           if (!$scope.files) return;
+
+  //           $scope.files.forEach(function(file){
+  //             $scope.upload = $upload.upload({
+  //               url: "https://api.cloudinary.com/v1_1/" + $.cloudinary.config().cloud_name + "/upload",
+  //               data: {upload_preset: $.cloudinary.config().upload_preset, context:'photo=' + $scope.title},
+  //               file: file
+  //             })
+
+  //             console.log(upload)
+
+  //             .progress(function (e) {
+  //               file.progress = Math.round((e.loaded * 100.0) / e.total);
+  //               file.status = "Uploading... " + file.progress + "%";
+  //               if(!$scope.$$phase) {
+  //                 $scope.$apply();
+  //               }
+  //             })
+  //             .success(function (data, status, headers, config) {
+  //               $rootScope.photos = $rootScope.photos || [];
+  //               data.context = {custom: {photo: $scope.title}};
+  //               file.result = data;
+  //               $rootScope.photos.push(data);
+  //               if(!$scope.$$phase) {
+  //                 $scope.$apply();
+  //               }
+  //             })
+
+  //             .error(function (data, status, headers, config) {
+  //               console.log('error block');
+  //             })
+  //             upload(imageURI);
+  //           });
+  //         },
+
+  //         function(err) {
+  //           console.err(err);
+  //         });
+  //       })
+  //     }
+  // })
+
+
+///-----Camera-----
+
+  .controller("CameraCtrl", function($scope, Camera, $rootScope, $upload) {
+          
+          //---Cloudinary----
+          /* Uploading with Angular File Upload */
+          console.log('camera');
+
+            var file = 'http://yjxd435wgma48foq911kjw11.wpengine.netdna-cdn.com/wp-content/uploads/google-logo.jpg'
+            var cloud_name = 'hazzleapp'
+
+            $scope.$watch('files', function() {
+              if (!$scope.files) return;
+
+            $scope.files.forEach(function(file){
+              $scope.upload = $upload.upload({
+                url: "https://api.cloudinary.com/v1_1/" + cloud_name + "/upload",
+                file: file,
+                api_key: '311441685958596',
+                timestamp: '1315060510',
+                signature: 'f4556941b33b7a04af78030f50586bc1cbaa7dce'
+              })
+
+
+              .progress(function (e) {
+                file.progress = Math.round((e.loaded * 100.0) / e.total);
+                file.status = "Uploading... " + file.progress + "%";
+                if(!$scope.$$phase) {
+                  $scope.$apply();
+                }
+              })
+              .success(function (data, status, headers, config) {
+                $rootScope.photos = $rootScope.photos || [];
+                data.context = {custom: {photo: $scope.title}};
+                file.result = data;
+                $rootScope.photos.push(data);
+                if(!$scope.$$phase) {
+                  $scope.$apply();
+                }
+              })
+
+              .error(function (data, status, headers, config) {
+                console.log('error block');
+              })
+        });
+    })
+  })
+>>>>>>> Stashed changes
 
 
 
