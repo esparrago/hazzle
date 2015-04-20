@@ -6,7 +6,7 @@ angular.module('starter.controllers', [])
 
 //-----Login-----
 
-  .controller("LoginController",function($scope, $firebaseAuth, $state) {
+  .controller("LoginController", function($scope, $firebaseAuth, $state) {
 
     var ref = new Firebase("https://esparrago-test.firebaseio.com");
     var auth = $firebaseAuth(ref);
@@ -14,7 +14,7 @@ angular.module('starter.controllers', [])
     $scope.login = function (user){
 
       auth.$authWithOAuthPopup('facebook').then(function (authData) {
-        console.log("Login/Logged in asss:" + authData.uid);
+        console.log("Login/Logged in as:" + authData.uid);
         console.log(authData);
         console.log(authData.facebook.displayName);
         $state.go('home.venues');
@@ -25,10 +25,7 @@ angular.module('starter.controllers', [])
           friends: "",
         });
       })
-
-
     }
-
   })
 
 //-----Home/Menu-----
@@ -68,69 +65,95 @@ angular.module('starter.controllers', [])
 
 //-----Chat-----
 
-  .controller("ChatCtrl", ["$scope", "Auth", "$firebaseArray",
-    function($scope, Auth, $firebaseArray) {
+  .controller("ChatCtrl", function($scope, Auth, $firebaseArray) {
 
-      var userData = $scope.auth.$getAuth();
+    var userData = $scope.auth.$getAuth();
+    $scope.user = userData.facebook.id;
+    console.log('chat/' + $scope.user);
+    $scope.userName = userData.facebook.displayName;
 
-      $scope.user = userData.uid;
 
-      var ref = new Firebase("https://esparrago-test.firebaseio.com/messages");
-      // create a synchronized array
-      // click on `index.html` above to see it used in the DOM!
-      $scope.messages = $firebaseArray(ref);
-    }
-  ])
+    var ref = new Firebase("https://esparrago-test.firebaseio.com/messages");
+    // create a synchronized array
+    // click on `index.html` above to see it used in the DOM!
+    $scope.messages = $firebaseArray(ref);
+
+    
+    $scope.chatModel = {
+      userid: $scope.user,
+      text: '',
+      name: $scope.userName,
+    };
+
+    $scope.$watch(function () { 
+      return $scope.chatModel.text; 
+    }, function (newValue, oldValue) {
+      if (newValue === oldValue || !newValue) return;
+      //console.log('text: ' + newValue);
+    });
+
+    $scope.addMessage = function() {
+      console.log($scope.messageText);
+      // $add on a synchronized array is like Array.push() except it saves to Firebase!
+      $scope.messages.$add($scope.chatModel);
+    };
+  })
+
+
 
 //-----Camera-----
 
-  .controller("CameraCtrl", function($scope, Camera, $http) {
+  .controller("CameraCtrl", function($scope, Camera, $http, Cloudinary) {
+
+      console.log($scope.imageUrl);
 
       console.log("camera");
       $scope.getPhoto = function() {
         console.log('Getting camera');
         Camera.getPicture({
+          destinationType: navigator.camera.DestinationType.DATA_URL,
           quality: 75,
           targetWidth: 720,
           targetHeight: 720,
           saveToPhotoAlbum: false
         })
+
         .then(function(imageURI) {
-          console.log(imageURI);
-          $scope.lastPhoto = imageURI;
+          //console.log(imageURI),
+          $scope.lastPhoto = imageURI,
 
-          //cloudinary
-          var file = $scope.lastPhoto;
-          var cloud_name = 'hazzleapp';
 
-          var fd = new FormData();
+        //cloudinary
 
-          fd.append('upload_preset', 'seller');
-          fd.append('file', file);
+          (function () {
+            console.log('subiendo');
+            //console.log('subiendo'+imageURI);
+            Cloudinary.uploadImage(imageURI)
 
-          $http
-              .post('https://api.cloudinary.com/v1_1/' + cloud_name + '/image/upload', fd, {
-                  headers: {
-                      'Content-Type': undefined,
-                      'X-Requested-With': 'XMLHttpRequest'
-                  }
+              .success(function (response) {
+                console.log('SUCCESSFUL POST TO CLOUDINARY');
+                console.log(response.url);
+                console.log(response.secure_url);
+                $scope.imageUrl=response.secure_url;
+                var imageBytes=response.bytes;
+                $scope.imageBytes = Math.ceil(imageBytes / 1000);
               })
-              .success(function (cloudinaryResponse) {
 
-                  // do stuff with cloudinary response
-                  // cloudinaryResponse = { public_id: ..., etc. }
-
+              .error(function(error) {
+                console.log('ERROR POSTING TO CLOUDINARY');
+                console.error('getPhoto error', error);
               })
-              .error(function (reponse) {
+          })(),
 
 
-              });
-        },
-        function(err) {
-          console.err(err);
-        });
-      }
-  });
+
+          function (error) {
+            console.error('getPhoto error', error);
+          };
+
+        }); //.then
+      }; //getPhoto
+  });//cameraCtrl
 
 
 

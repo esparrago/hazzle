@@ -1,20 +1,30 @@
 <ion-view view-title="Chat">
 	<ion-content>
-		<div class="container">
-	    <h2>Chat</h2>
-		<form>
-		  <input placeholder="Message..." ng-model="newMessage">
-		  <button type="submit" ng-click="addMessage(newMessage);newMessage = null;">send</button>
-		</form>
-		<p>{{ user.facebook.displayName }}</p>
-		<ul id="messages" ng-show="messages.length">
-			<li ng-repeat="message in messages | reverse | limitTo:10">
-				<img ng-src="https://graph.facebook.com/{{message.userid}}/picture" alt="" class="img-circle" style="width:30px;height:30px;">
-				{{message.text}}
-			</li>
-		</ul>
+		<div class="row">
+			<div class="col col-90">
+			    <h2>Chat</h2>
 
-		<p class="alert alert-danger" ng-show="err">{{err}}</p>
+				<form>
+				  <input placeholder="Escribe tu mensaje" name="text" ng-model="chatModel.text">
+				  <button class="button button-small button-balanced"  type="submit" ng-click="addMessage(messageText)"> Enviar </button>
+				</form>
+
+				{{messageText}}
+
+				<p>{{ user.facebook.displayName }}</p>
+				<ul id="messages" ng-show="messages.length">
+					<li ng-repeat="message in messages | reverse | limitTo:10">
+						<img ng-src="https://graph.facebook.com/{{message.userid}}/picture" alt="" class="img-circle" style="width:30px;height:30px;">
+						{{message.text}} <br>
+						{{message.name}}
+						<i class="icon ion-close-circled" href="" ng-click="messages.$remove(message)" style="color: red;"></i>
+
+					</li>
+
+				</ul>
+
+				<p class="alert alert-danger" ng-show="err">{{err}}</p>
+			</div>
 		</div>
 	</ion-content>
 </ion-view>
