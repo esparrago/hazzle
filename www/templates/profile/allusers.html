@@ -1,0 +1,19 @@
+<ion-view view-title="All users">
+	<ion-content>
+		<div class="row">
+			<div class="col col-80 col-offset-10 text-center">
+			    <h3>All users</h3>
+			</div>
+		</div>
+		<div class="row text-center" ng-repeat="user in users" ng-show="users.length">
+	        <a ng-href="#/home/users/{{user.$id | deletechars}}">
+	        	<div class="text-center">
+		            <img ng-src="https://graph.facebook.com/{{user.$id | deletechars}}/picture" alt="">
+		            <p>{{user.$id | deletechars}}</p>
+		            <br>
+		            <br>
+	        	</div>
+	        </a>
+	    </div>
+	</ion-content>
+</ion-view>

@@ -2,11 +2,11 @@
 	<ion-content>
 		<div class="row">
 			<div class="col col-80 col-offset-10">
-				<h1>hola</h1>
+				<h1 class="text-center">hola</h1>
 				<button ng-click="getPhoto()" class="button button-block button-primary">Photo</button>
 				<p ng-hide="imageUrl == undefined">
 					La imagen esta guardada en este link:<br>
-					{{imageUrl}} y pesa solo {{imageBytes}} Kilobytes!
+					{{imageUrl}} y pesa solo <strong>{{imageBytes}} Kilobytes! </strong>
 				</p> 
 				<img ng-src="{{imageUrl}}" style="max-width: 100%" alt="">
 			</div>

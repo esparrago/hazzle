@@ -24,17 +24,32 @@
           <p class="text-center user-displayname">{{userData.facebook.displayName}}</p>
         </ion-item>
 
-        <ion-item nav-clear menu-close ng-click="logout()" href="">
+
+        <ion-item nav-clear menu-close class="item-icon-left" ng-click="logout()" href="">
+          <i class="icon ion-android-exit"></i>
           logout
         </ion-item>
-        <ion-item nav-clear menu-close href="#/home/chat">
+        <ion-item nav-clear menu-close class="item-icon-left" href="#/home/chat">
+          <i class="icon ion-chatbubbles"></i>
           Chat
         </ion-item>
-        <ion-item nav-clear menu-close href="#/home/venues">
+        <ion-item nav-clear menu-close class="item-icon-left" href="#/home/venues">
+          <i class="icon ion-beer"></i>
           Bares
         </ion-item>
-        <ion-item nav-clear menu-close href="#/home/camera">
+        <ion-item nav-clear menu-close class="item-icon-left"  href="#/home/camera">
+          <i class="icon ion-camera"></i>
           Camera
+        </ion-item>
+
+        <ion-item nav-clear menu-close class="item-icon-left" ng-href="#/home/user/{{userData.facebook.id}}">
+          <i class="icon ion-person"></i>
+           Mi perfil
+        </ion-item>
+
+        <ion-item nav-clear menu-close class="item-icon-left" href="#/home/allusers">
+          <i class="icon ion-person-stalker"></i>
+          Todos los usuarios
         </ion-item>
 
       </ion-list>

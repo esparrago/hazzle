@@ -8,7 +8,7 @@ angular.module('starter.controllers', [])
 
   .controller("LoginController", function($scope, $firebaseAuth, $state) {
 
-    var ref = new Firebase("https://esparrago-test.firebaseio.com");
+    var ref = new Firebase("https://esparrago-test.firebaseio.com/users");
     var auth = $firebaseAuth(ref);
 
     $scope.login = function (user){
@@ -18,12 +18,25 @@ angular.module('starter.controllers', [])
         console.log(authData);
         console.log(authData.facebook.displayName);
         $state.go('home.venues');
-        //Agregar Usuario
-        ref.child("users").child(authData.uid).set({
+
+        if ( ref.child(authData.uid) ) {
+
+          console.log('El usuario existe');
+
+        }
+
+        else {
+
+//-----------  Agregar Usuario
+        
+        ref.child(authData.uid).set({
           email: authData.facebook.email,
           displayName: authData.facebook.displayName,
-          friends: "",
         });
+
+        }
+
+
       })
     }
   })
@@ -65,7 +78,7 @@ angular.module('starter.controllers', [])
 
 //-----Chat-----
 
-  .controller("ChatCtrl", function($scope, Auth, $firebaseArray) {
+  .controller("ChatCtrl", function($scope, Auth, $firebaseArray, $deletechars) {
 
     var userData = $scope.auth.$getAuth();
     $scope.user = userData.facebook.id;
@@ -103,16 +116,47 @@ angular.module('starter.controllers', [])
 
 //-----Camera-----
 
-  .controller("CameraCtrl", function($scope, Camera, $http, Cloudinary) {
+  .controller("CameraCtrl", function($scope, Camera, $http, Cloudinary, $timeout, $ionicLoading, Auth, $firebaseArray, $firebaseObject) {
 
-      console.log($scope.imageUrl);
+      console.log('imagen, ' + $scope.imageUrl);
+      
+
+      var userData = $scope.auth.$getAuth();
+      var user = userData.facebook.id;
+      $scope.user = userData.facebook.id;
+      console.log('camera/' + user);
+      console.log('uservar, ' + user);
+      var ref = new Firebase("https://esparrago-test.firebaseio.com/users/" + userData.uid);
+      $scope.users = $firebaseArray(ref);
+      console.log($scope.users);
+      console.log(ref);
+      $scope.userImages = $firebaseArray(ref.child('images'));
+      console.log($scope.userImages);
+
+
+      $ionicLoading.show({
+        template: 'Loading...',
+        content: 'Loading',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 200,
+        showDelay: 0
+      });
+      
+      // Set a timeout to clear loader, however you would actually call the $ionicLoading.hide(); method whenever everything is ready or loaded.
+      $timeout(function () {
+        $ionicLoading.hide();
+      }, 500);
 
       console.log("camera");
       $scope.getPhoto = function() {
         console.log('Getting camera');
+        var userData = $scope.auth.$getAuth();
+        var user = userData.facebook.id;
+        console.log('getPhoto - ' + user)
         Camera.getPicture({
           destinationType: navigator.camera.DestinationType.DATA_URL,
-          quality: 75,
+          quality: 60,
           targetWidth: 720,
           targetHeight: 720,
           saveToPhotoAlbum: false
@@ -121,31 +165,64 @@ angular.module('starter.controllers', [])
         .then(function(imageURI) {
           //console.log(imageURI),
           $scope.lastPhoto = imageURI,
+          console.log('then - ' + user);
 
 
         //cloudinary
 
           (function () {
             console.log('subiendo');
+            console.log('subiendo, ' + user);
+            $ionicLoading.show({
+              template: 'Loading...',
+              content: 'Loading',
+              animation: 'fade-in',
+              showBackdrop: true,
+              maxWidth: 200,
+              showDelay: 0
+            });
             //console.log('subiendo'+imageURI);
-            Cloudinary.uploadImage(imageURI)
+            Cloudinary.uploadImage(imageURI, user)
 
               .success(function (response) {
                 console.log('SUCCESSFUL POST TO CLOUDINARY');
                 console.log(response.url);
                 console.log(response.secure_url);
+                $scope.imgId=response.public_id;
                 $scope.imageUrl=response.secure_url;
                 var imageBytes=response.bytes;
                 $scope.imageBytes = Math.ceil(imageBytes / 1000);
+                $scope.userUid = "facebook:" + user;
+                console.log($scope.userUid);
+//--------------//add Img Url to firebase
+
+                if ($scope.userImages){
+                  console.log('Ya hay imagenes!');
+                  $scope.userImages.$add({ url: $scope.imageUrl})
+                    .then(function(ref) {
+                      var id = ref.key();
+                      console.log("added record with id " + id);
+                      list.$indexFor(id); // returns location in the array
+                    });
+                }
+                else {
+                  console.log('no existen imagenes');
+                  $scope.users.$add({
+                    images:{ 
+                      url: $scope.imageUrl
+                    }
+                  });
+                }
+
+                $ionicLoading.hide();
               })
 
               .error(function(error) {
                 console.log('ERROR POSTING TO CLOUDINARY');
                 console.error('getPhoto error', error);
+                $ionicLoading.hide();
               })
           })(),
-
-
 
           function (error) {
             console.error('getPhoto error', error);
@@ -153,8 +230,36 @@ angular.module('starter.controllers', [])
 
         }); //.then
       }; //getPhoto
-  });//cameraCtrl
+  })
 
+  .controller("MyprofileCtrl", function($scope, Auth, $firebaseArray) {
+
+    var userData = $scope.auth.$getAuth();
+    $scope.user = userData.uid;
+    console.log('chat/' + $scope.user);
+    $scope.userid = userData.facebook.id;
+    $scope.me = userData.facebook;
+    console.log($scope.user);
+
+
+    var ref = new Firebase("https://esparrago-test.firebaseio.com/users/" + $scope.user + "/images");
+    // create a synchronized array
+    // click on `index.html` above to see it used in the DOM!
+    $scope.images = $firebaseArray(ref);
+    console.log($scope.images);
+  })
+
+
+
+.controller("AllusersCtrl", function($scope, Auth, $firebaseArray) {
+
+
+    var ref = new Firebase("https://esparrago-test.firebaseio.com/users");
+    // create a synchronized array
+    // click on `index.html` above to see it used in the DOM!
+    $scope.users = $firebaseArray(ref);
+    console.log($scope.users);
+  })
 
 
 

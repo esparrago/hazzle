@@ -101,6 +101,17 @@ p.user-displayname {
 }
 
 
+.images-row  {
+
+	background-color: whitesmoke;
+}
+
+.images-row div.col.col-25 {
+
+	height: 24.21vw;
+  	overflow: hidden;
+}
+
 /*
 video#bgvid {
 	position: fixed; right: 0; bottom: 0;

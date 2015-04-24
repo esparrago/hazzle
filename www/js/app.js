@@ -132,6 +132,26 @@ angular.module('starter', ['ionic', 'firebase', 'starter.services', 'starter.con
     }
   })
 
+  .state('home.me', {
+    url: "/user/:userid",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/profile/me.html",
+        controller: 'MyprofileCtrl'
+      }
+    }
+  })
+
+  .state('home.allusers', {
+    url: "/allusers",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/profile/allusers.html",
+        controller: 'AllusersCtrl'
+      }
+    }
+  })
+
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('login');

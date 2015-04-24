@@ -16,9 +16,14 @@ angular.module('starter.filters', [])
 	})
 
 	.filter('reverse', function() {
-    return function(items) {
-      return angular.isArray(items)? items.slice().reverse() : [];
-    };
-  });
+	    return function(items) {
+	      return angular.isArray(items)? items.slice().reverse() : [];
+	    };
+  	})
 
+	.filter('deletechars', function () {
+	    return function (value) {
+	        return value.slice(9,50);
+	    };
+	});
 

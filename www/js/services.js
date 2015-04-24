@@ -32,10 +32,10 @@ angular.module('starter.services', [])
     var secret = 'l28qacTLOHZd-0Bi4vMPy5DL214';
 
     // Cloudinary needs a SHA1-hashed signature to authenticate uploads
-    var getSignature = function(timestamp) {
+    var getSignature = function(timestamp, userid) {
       // info on CryptoJS at https://code.google.com/p/crypto-js/#SHA-1
       // the docs leave out that you need to use toString to get the actual hash
-      return CryptoJS.SHA1('timestamp=' + timestamp + '' + secret).toString();
+      return CryptoJS.SHA1( 'folder=' + userid + '&' + 'timestamp=' + timestamp + '' + secret).toString();
     };
 
     return {
@@ -47,17 +47,18 @@ angular.module('starter.services', [])
     };
   })
 
-  .factory('Cloudinary', ['$http', 'CloudinaryConfig', function($http, CloudinaryConfig) {
+  .factory('Cloudinary', ['$http', 'CloudinaryConfig', function($http, CloudinaryConfig, Auth) {
 
     // Upload image to Cloudinary storage
     // api docs at http://cloudinary.com/documentation/upload_images#remote_upload
-    var uploadImage = function(imageURI) {
+    var uploadImage = function(imageURI, user) {
       var timestamp = +new Date();
-
+      var userid = 'user_' + user;
       // console.log('ABOUT TO POST IMAGE TO CLOUDINARY');
       // console.log(timestamp);
       // console.log(CloudinaryConfig.getSignature(timestamp));
       // console.log('services URI'+ imageURI);
+      console.log(user);
 
       // return a promise to get url from cloudinary
       return $http.post(CloudinaryConfig.url, {
@@ -65,8 +66,9 @@ angular.module('starter.services', [])
         // and http://en.wikipedia.org/wiki/Data_URI_scheme#JavaScript)
         file:'data:image/jpg;base64,'+ imageURI,
         api_key: CloudinaryConfig.apiKey,
+        folder: userid,
         timestamp: timestamp,
-        signature: CloudinaryConfig.getSignature(timestamp)
+        signature: CloudinaryConfig.getSignature(timestamp,userid)
       });
     };
 
