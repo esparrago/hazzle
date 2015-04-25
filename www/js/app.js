@@ -133,7 +133,7 @@ angular.module('starter', ['ionic', 'firebase', 'starter.services', 'starter.con
   })
 
   .state('home.me', {
-    url: "/user/:userid",
+    url: "/me",
     views: {
       'menuContent': {
         templateUrl: "templates/profile/me.html",
@@ -148,6 +148,16 @@ angular.module('starter', ['ionic', 'firebase', 'starter.services', 'starter.con
       'menuContent': {
         templateUrl: "templates/profile/allusers.html",
         controller: 'AllusersCtrl'
+      }
+    }
+  })
+
+  .state('home.userprofile', {
+    url: "/{userid}",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/profile/others.html",
+        controller: 'OtherusersCtrl'
       }
     }
   })

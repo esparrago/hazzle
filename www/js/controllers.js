@@ -6,20 +6,41 @@ angular.module('starter.controllers', [])
 
 //-----Login-----
 
-  .controller("LoginController", function($scope, $firebaseAuth, $state) {
+  .controller("LoginController", function($scope, $firebaseAuth, $state, $firebaseArray) {
 
     var ref = new Firebase("https://esparrago-test.firebaseio.com/users");
     var auth = $firebaseAuth(ref);
 
+    var usersref = new Firebase("https://esparrago-test.firebaseio.com/users");
+    var users = $firebaseArray(usersref);
+
+
+
     $scope.login = function (user){
 
       auth.$authWithOAuthPopup('facebook').then(function (authData) {
+
+        scope: "email,user_likes",
+
         console.log("Login/Logged in as:" + authData.uid);
         console.log(authData);
         console.log(authData.facebook.displayName);
         $state.go('home.venues');
+        console.log(users);
+        console.log(authData.facebook.email);
 
-        if ( ref.child(authData.uid) ) {
+        // if (users.filter(function(e) { return e.$id == authData.uid; }).length > 0) {
+
+        //   console.log('si funciono!!!');
+
+        // }
+
+        // else {
+
+        //   console.log('funciono y no esta en base de datos!!!');
+        // }
+
+        if (users.filter(function(e) { return e.$id == authData.uid; }).length > 0) {
 
           console.log('El usuario existe');
 
@@ -27,10 +48,12 @@ angular.module('starter.controllers', [])
 
         else {
 
+
+          console.log('usuario No existe');
 //-----------  Agregar Usuario
         
         ref.child(authData.uid).set({
-          email: authData.facebook.email,
+          // email: authData.facebook.email,
           displayName: authData.facebook.displayName,
         });
 
@@ -261,6 +284,32 @@ angular.module('starter.controllers', [])
     console.log($scope.users);
   })
 
+
+.controller("OtherusersCtrl", function($scope, Auth, $firebaseObject, $stateParams, $firebaseArray) {
+
+    var userid = $stateParams.userid;
+    $scope.fbuser = userid; 
+    
+    console.log(userid);
+  
+
+    var useruid = 'facebook:' + userid;
+    console.log(useruid);
+
+    var ref = new Firebase("https://esparrago-test.firebaseio.com/users/"+ useruid);
+    // create a synchronized array
+    // click on `index.html` above to see it used in the DOM!
+    var user = $firebaseObject(ref);
+    $scope.user = user;
+
+    var imgref = new Firebase("https://esparrago-test.firebaseio.com/users/"+ useruid+"/images");
+    // create a synchronized array
+    // click on `index.html` above to see it used in the DOM!
+    $scope.images = $firebaseArray(imgref);
+    console.log($scope.images);
+
+
+  })
 
 
 

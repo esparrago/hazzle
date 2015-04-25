@@ -1,0 +1,24 @@
+<ion-view view-title="{{me.displayName}}">
+	<ion-content>
+		<div class="row">
+			<div class="col col-80 col-offset-10 text-center">
+				<img ng-src="https://graph.facebook.com/{{fbuser}}/picture" class="img-circle" alt="">
+			    <h3>{{user.name || user.displayName}}</h3>
+			</div>
+		</div>
+		<div class="row images-row" ng-repeat="image in images" ng-if="$index % 4 === 0">
+			        <div class="col col-25" ng-if="$index < images.length">
+			            <img ng-src="{{images[$index].url}}" width="100%" />
+			        </div>
+			        <div class="col col-25" ng-if="$index + 1 < images.length">
+			            <img ng-src="{{images[$index + 1].url}}" width="100%" />
+			        </div>
+			        <div class="col col-25" ng-if="$index + 2 < images.length">
+			            <img ng-src="{{images[$index + 2].url}}" width="100%" />
+			        </div>
+			        <div class="col col-25" ng-if="$index + 3 < images.length">
+			            <img ng-src="{{images[$index + 3].url}}" width="100%" />
+			        </div>
+			    </div>
+	</ion-content>
+</ion-view>
