@@ -311,5 +311,42 @@ angular.module('starter.controllers', [])
 
   })
 
+.controller('GeoCtrl', function($scope, $ionicLoading, Fsapi, $http) {
+
+
+  $scope.search_venue = {value: ''};
+
+
+  $scope.$watch(function () { 
+      return $scope.search_venue.value; 
+    }, function (newValue, oldValue) {
+      if (newValue === oldValue || !newValue) return;
+      //console.log('text: ' + newValue);
+    }); 
+
+  $scope.search = function(){
+
+    console.log($scope.search_venue.value);
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+
+      var lat =  position.coords.latitude;
+      var lon =  position.coords.longitude;
+      console.log("coords: " + lat + " , " + lon);
+
+      $scope.city = "Bogota";
+      $scope.ll = lat+","+lon;
+
+      //------Request------
+      
+      Fsapi.get({ near: $scope.city, query: $scope.search_venue.value, ll: $scope.ll }, function (placesResult) {
+        console.log("funciono");
+        console.log(placesResult.response.venues);
+        $scope.venues = placesResult.response.venues;
+      }); 
+    })
+  }
+})
+
 
 

@@ -11,7 +11,7 @@
 var firebaseUrl = "https://esparrago-test.firebaseio.com";
 
 
-angular.module('starter', ['ionic', 'firebase', 'starter.services', 'starter.controllers', 'starter.directives','starter.filters','cloudinary'])
+angular.module('starter', ['ionic', 'firebase', 'starter.services', 'starter.controllers', 'starter.directives','starter.filters','cloudinary', 'ngResource'])
 
 .run(function($ionicPlatform,$state,$rootScope,$location,Auth,$ionicLoading) {
   $ionicPlatform.ready(function() {
@@ -158,6 +158,17 @@ angular.module('starter', ['ionic', 'firebase', 'starter.services', 'starter.con
       'menuContent': {
         templateUrl: "templates/profile/others.html",
         controller: 'OtherusersCtrl'
+      }
+    }
+  })
+
+
+  .state('home.geo', {
+    url: "/dev/geo",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/geo.html",
+        controller: 'GeoCtrl'
       }
     }
   })
