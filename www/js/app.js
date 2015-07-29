@@ -102,6 +102,26 @@ angular.module('starter', ['ionic', 'firebase', 'starter.services', 'starter.con
       }
     })
 
+    .state('home.venueslist', {
+      url: "/venues/list",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/venueslist.html",
+          controller: 'venuesListCtrl'
+        }
+      }
+    })
+
+  .state('home.venueprofile', {
+      url: "/venues/profile/:venueName",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/profile/venues.html",
+          controller: 'venuesProfileCtrl'
+        }
+      }
+    })
+
   .state('home.chat', {
     url: "/chat",
     views: {
@@ -138,6 +158,16 @@ angular.module('starter', ['ionic', 'firebase', 'starter.services', 'starter.con
       'menuContent': {
         templateUrl: "templates/profile/me.html",
         controller: 'MyprofileCtrl'
+      }
+    }
+  })
+
+  .state('home.myimages', {
+    url: "/me/images/{imgid}",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/profile/myimages.html",
+        controller: 'MyimagesCtrl'
       }
     }
   })

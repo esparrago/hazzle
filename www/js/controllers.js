@@ -101,7 +101,7 @@ angular.module('starter.controllers', [])
 
 //-----Chat-----
 
-  .controller("ChatCtrl", function($scope, Auth, $firebaseArray, $deletechars) {
+  .controller("ChatCtrl", function($scope, Auth, $firebaseArray) {
 
     var userData = $scope.auth.$getAuth();
     $scope.user = userData.facebook.id;
@@ -129,7 +129,7 @@ angular.module('starter.controllers', [])
     });
 
     $scope.addMessage = function() {
-      console.log($scope.messageText);
+      console.log($scope.chatModel.text);
       // $add on a synchronized array is like Array.push() except it saves to Firebase!
       $scope.messages.$add($scope.chatModel);
     };
@@ -274,6 +274,31 @@ angular.module('starter.controllers', [])
 
 
 
+.controller("MyimagesCtrl", function($scope, Auth, $firebaseObject, $stateParams) {
+
+    var imgid = $stateParams.imgid;
+    $scope.imgid = imgid; 
+
+    var userData = $scope.auth.$getAuth();
+    $scope.user = userData.uid;
+    console.log('chat/' + $scope.user);
+    $scope.userid = userData.facebook.id;
+    $scope.me = userData.facebook;
+    console.log($scope.user);
+
+    var href = ("https://esparrago-test.firebaseio.com/users/" + $scope.user + "/images" + $scope.imgid);
+
+    var ref = new Firebase("https://esparrago-test.firebaseio.com/users/" + $scope.user + "/images/" + $scope.imgid);
+    // create a synchronized array
+    // click on `index.html` above to see it used in the DOM!
+    $scope.image = $firebaseObject(ref);
+    console.log(href);
+    console.log($scope.image);
+  })
+
+
+
+
 .controller("AllusersCtrl", function($scope, Auth, $firebaseArray) {
 
 
@@ -311,18 +336,23 @@ angular.module('starter.controllers', [])
 
   })
 
-.controller('GeoCtrl', function($scope, $ionicLoading, Fsapi, $http) {
+.controller('GeoCtrl', function($scope, $ionicLoading, Fsapi, $http, $firebaseArray) {
 
 
   $scope.search_venue = {value: ''};
 
 
-  $scope.$watch(function () { 
+  $scope.$watch(function () {
+
       return $scope.search_venue.value; 
     }, function (newValue, oldValue) {
       if (newValue === oldValue || !newValue) return;
       //console.log('text: ' + newValue);
-    }); 
+    });
+
+  $scope.showOnlybars = function(name) {
+    return  ! (name === 'Bar' || name ==='Brewery' || name ==='Lounge' || name === 'Night Market' || name ==='Nightclub' || name ==='Other Nightlife' || name === 'Speakeasy' || name ==='Strip Club' || name ==='Bowling Alley' || name === 'Tapas Restaurant' || name === 'Restaurant');
+  }
 
   $scope.search = function(){
 
@@ -346,7 +376,41 @@ angular.module('starter.controllers', [])
       }); 
     })
   }
+
+  $scope.add_venue = function(info){
+
+    console.log(info.name);
+
+    $scope.db_venuesModel = {
+      name: info.name,
+      id: info.id,
+      address: info.location.formattedAddress[0],
+    };
+
+    console.log($scope.db_venuesModel);
+
+    var ref = new Firebase("https://esparrago-test.firebaseio.com/venues");
+    $scope.db_venues = $firebaseArray(ref);
+    $scope.db_venues.$add($scope.db_venuesModel);
+
+
+  }
 })
 
 
+.controller('venuesListCtrl', function($scope, $ionicLoading, Fsapi, $http, $firebaseArray) {
 
+  var ref = new Firebase("https://esparrago-test.firebaseio.com/venues");
+  $scope.db_venues = $firebaseArray(ref);
+})
+
+.controller('venuesProfileCtrl', function($scope,$stateParams,$firebaseObject) {
+
+  var venueName = $stateParams.venueName;
+
+  var ref = new Firebase("https://esparrago-test.firebaseio.com/venues/"+venueName);
+  $scope.db_venue = $firebaseObject(ref);
+  console.log(venueName);
+  console.log($scope.db_venue);
+
+});

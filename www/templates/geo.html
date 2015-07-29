@@ -7,11 +7,11 @@
 		    <input ng-model="search_venue.value" type="text" placeholder="En donde estas?"> 
 		  </label>
 		</div>
-		<button class="button button-small button-balanced center-block" ng-click="search()">Buscar Bares</button>
+		<button class="button button-small button-balanced center-block" type="submit" ng-click="search()">Buscar Bares</button>
 		<ul id="venues" ng-show="venues.length">
-			<li ng-repeat="venue in venues | limitTo:5">
+			<li ng-repeat="venue in venues | limitTo:5" ng-hide="showOnlybars(venue.categories[0].name)">
 				<p>{{venue.name}} <br> {{venue.location.formattedAddress}}</p>
-				<button class="button button-small button-balanced center-block" ng-click="add_venue()">agregar a firebase</button>
+				<button class="button button-small button-balanced center-block" ng-click="add_venue({{venue}})">agregar a firebase</button>
 				<br>
 				<br>
 			</li>

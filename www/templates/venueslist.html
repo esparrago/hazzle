@@ -1,0 +1,12 @@
+<ion-view view-title="Bares">
+  <ion-content>
+    <ion-list>
+      <ion-item  ng-repeat="db_venues in db_venues" href="#/home/venues/profile/{{db_venues.$id | nospace}}">
+        <h1>{{db_venues.name}}</h1>
+        <h2>{{db_venues.address}}</h2>
+        <br>
+        <h2>{{db_venues.$id}}</h2>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
